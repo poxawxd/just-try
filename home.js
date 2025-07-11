@@ -14,7 +14,7 @@ const adminEmail = "peerapatjumpajoy@gmail.com";
 
 firebase.auth().onAuthStateChanged(user => {
   if (!user) {
-    window.location.href = "login.html";
+    window.location.href = "index.html";
   } else {
     document.getElementById("user-email").innerText = user.email;
 
