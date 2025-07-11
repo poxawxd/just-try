@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>รายละเอียดสินค้า - Secret Shop</title>
+  <link rel="stylesheet" href="detail-style.css" />
+
+  <!-- โหลด Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <!-- โหลดข้อมูลสินค้า -->
+  <script src="product.js"></script>
+</head>
+<body>
+
+  <a href="home.html" class="back-link">← กลับหน้าหลัก</a>
+
+  <div class="detail-container" id="detail-container"></div>
+
+  <!-- index.html หรือ detail.html -->
+<script>
+  document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+    alert("ห้ามคลิกขวาเพื่อป้องกันการก็อปปี้ภาพ!");
+  });
+</script>
+</body>
+
+
+  <script>
+    // ✅ 1: Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAMCrFIMTBHmW2kUapiyc9d-Df7nMpRCys",
+      authDomain: "myshop-login-84723.firebaseapp.com",
+      projectId: "myshop-login-84723",
+      storageBucket: "myshop-login-84723.firebasestorage.app",
+      messagingSenderId: "728687477116",
+      appId: "1:728687716:web:4bf8e3a1defab26ff0e4f9",
+      measurementId: "G-V7QHPDYPZC"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // ✅ 2: อ่านพารามิเตอร์ชื่อสินค้า
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    const productName = getQueryParam('product');
+    const container = document.getElementById('detail-container');
+
+    // ✅ 3: โหลดข้อมูลสินค้าและแสดง
+    if (!productName || !products[productName]) {
+      container.innerHTML = "<p>ไม่พบข้อมูลสินค้า</p>";
+    } else {
+      const p = products[productName];
+      container.innerHTML = `
+        <img src="${p.image}" alt="${productName}" />
+        <h2>${productName}</h2>
+        <p>${p.detail}</p>
+        <p>💸 ราคา: ${p.price} บาท</p>
+        <a href="payment.html?product=${encodeURIComponent(productName)}" class="btn-buy">สั่งซื้อ</a>
+      `;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>ประวัติคำสั่งซื้อ - Secret Shop</title>
+  <link rel="stylesheet" href="history.css" />
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <a href="home.html" class="back-button" aria-label="กลับหน้าหลัก">← กลับหน้าหลัก</a>
+  
+  <div class="history-container">
+    <h2>ประวัติคำสั่งซื้อของฉัน</h2>
+    <button onclick="logout()" class="btn-logout">ออกจากระบบ</button>
+    <div id="orders-list">กำลังโหลดรายการ...</div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAMCrFIMTBHmW2kUapiyc9d-Df7nMpRCys",
+      authDomain: "myshop-login-84723.firebaseapp.com",
+      projectId: "myshop-login-84723",
+      storageBucket: "myshop-login-84723.appspot.com",
+      messagingSenderId: "728687477116",
+      appId: "1:728687477116:web:4bf8e3a1defab26ff0e4f9",
+      measurementId: "G-V7QHPDYPZC"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        alert("กรุณาเข้าสู่ระบบก่อน");
+        window.location.href = "login.html";
+        return;
+      }
+      loadMyOrders(user.email);
+    });
+
+    function logout() {
+      auth.signOut().then(() => window.location.href = "login.html");
+    }
+
+    function escapeHtml(text) {
+      if (!text) return "";
+      return text.toString().replace(/[&<>"']/g, match => {
+        const map = {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#039;'
+        };
+        return map[match];
+      });
+    }
+
+    function loadMyOrders(email) {
+      const ordersList = document.getElementById("orders-list");
+      ordersList.innerHTML = "กำลังโหลดรายการ...";
+
+      db.collection("orders")
+        .where("email", "==", email)
+        .orderBy("timestamp", "desc")
+        .onSnapshot(snapshot => {
+          if (snapshot.empty) {
+            ordersList.innerHTML = "<p>ยังไม่มีคำสั่งซื้อ</p>";
+            return;
+          }
+
+          let html = '<table>';
+          html += `
+            <tr>
+              <th>สินค้า</th>
+              <th>ราคา</th>
+              <th>สถานะ</th>
+              <th>ลิงก์ดาวน์โหลด</th>
+            </tr>
+          `;
+
+          snapshot.forEach(doc => {
+            const data = doc.data();
+
+            const product = escapeHtml(data.product || "-");
+            const price = data.price ? `${data.price} บาท` : "-";
+
+            let statusText = "ไม่ทราบสถานะ";
+            let statusColor = "gray";
+            switch (data.status) {
+              case "approved":
+                statusText = "✅ อนุมัติแล้ว";
+                statusColor = "green";
+                break;
+              case "pending":
+                statusText = "🕓 รอดำเนินการ";
+                statusColor = "orange";
+                break;
+              case "rejected":
+                statusText = "❌ ปฏิเสธแล้ว";
+                statusColor = "crimson";
+                break;
+              default:
+                if (data.status) {
+                  statusText = escapeHtml(data.status);
+                }
+            }
+
+            const downloadLink = (data.status === "approved" && data.driveLink)
+              ? `<a href="${escapeHtml(data.driveLink)}" target="_blank" rel="noopener noreferrer">ดาวน์โหลด</a>`
+              : "-";
+
+            html += `
+              <tr>
+                <td>${product}</td>
+                <td>${price}</td>
+                <td style="color:${statusColor}; font-weight: 600;">${statusText}</td>
+                <td>${downloadLink}</td>
+              </tr>
+            `;
+          });
+
+          html += "</table>";
+          ordersList.innerHTML = html;
+        });
+    }
+  </script>
+</body>
+</html>

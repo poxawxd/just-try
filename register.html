@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>สมัครสมาชิก - Secret Shop</title>
+  <link rel="stylesheet" href="login-style.css" />
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <div class="login-container">
+    <h2>สมัครสมาชิก</h2>
+    <input type="email" id="email" placeholder="อีเมล" />
+    <input type="password" id="password" placeholder="รหัสผ่าน" />
+    <input type="password" id="confirm-password" placeholder="ยืนยันรหัสผ่าน" />
+    <button type="button" onclick="register()">สมัครสมาชิก</button>
+    <p id="message" style="color:red"></p>
+    <p>มีบัญชีอยู่แล้ว? <a href="login.html">เข้าสู่ระบบที่นี่</a></p>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAMCrFIMTBHmW2kUapiyc9d-Df7nMpRCys",
+      authDomain: "myshop-login-84723.firebaseapp.com",
+      projectId: "myshop-login-84723",
+      storageBucket: "myshop-login-84723.firebasestorage.app",
+      messagingSenderId: "728687477116",
+      appId: "1:728687477116:web:4bf8e3a1defab26ff0e4f9",
+      measurementId: "G-V7QHPDYPZC"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    const auth = firebase.auth();
+
+    function register() {
+      const email = document.getElementById("email").value.trim();
+      const pass = document.getElementById("password").value;
+      const confirmPass = document.getElementById("confirm-password").value;
+      const messageEl = document.getElementById("message");
+
+      messageEl.innerText = ""; // เคลียร์ข้อความเดิม
+
+      if (!email) {
+        messageEl.innerText = "กรุณากรอกอีเมล";
+        return;
+      }
+      if (!pass || !confirmPass) {
+        messageEl.innerText = "กรุณากรอกรหัสผ่านและยืนยันรหัสผ่าน";
+        return;
+      }
+      if (pass !== confirmPass) {
+        messageEl.innerText = "รหัสผ่านทั้งสองไม่ตรงกัน กรุณากรอกให้เหมือนกัน";
+        return;
+      }
+
+      auth.createUserWithEmailAndPassword(email, pass)
+        .then(() => {
+          window.location.href = "home.html";
+        })
+        .catch(error => {
+          messageEl.innerText = error.message;
+        });
+    }
+
+    // รองรับกด Enter ในทุก input ให้ทำการ register()
+    document.querySelectorAll('#email, #password, #confirm-password').forEach(input => {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          register();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

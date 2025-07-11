@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>หน้าแอดมิน - Secret Shop</title>
+  <link rel="stylesheet" href="admin.css" />
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="product.js"></script> <!-- สำคัญ -->
+</head>
+<body>
+  <a href="home.html" class="back-button" aria-label="กลับหน้าหลัก">← กลับหน้าหลัก</a>
+
+  <div class="admin-container">
+    <h2>หน้าแอดมิน - รายการสั่งซื้อ</h2>
+    <button onclick="logout()" class="btn-logout">ออกจากระบบ</button>
+    <div id="orders-list">กำลังโหลดรายการ...</div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAMCrFIMTBHmW2kUapiyc9d-Df7nMpRCys",
+      authDomain: "myshop-login-84723.firebaseapp.com",
+      projectId: "myshop-login-84723",
+      storageBucket: "myshop-login-84723.appspot.com",
+      messagingSenderId: "728687477116",
+      appId: "1:728687116:web:4bf8e3a1defab26ff0e4f9",
+      measurementId: "G-V7QHPDYPZC"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const adminEmail = "peerapatjumpajoy@gmail.com";
+
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        alert("กรุณาเข้าสู่ระบบก่อน");
+        window.location.href = "login.html";
+        return;
+      }
+      if (user.email !== adminEmail) {
+        alert("คุณไม่มีสิทธิ์เข้าใช้งานหน้านี้");
+        window.location.href = "home.html";
+        return;
+      }
+      loadOrders();
+    });
+
+    function logout() {
+      auth.signOut().then(() => window.location.href = "login.html");
+    }
+
+    function escapeHtml(text) {
+      if (!text) return "";
+      return text.toString().replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+      }[m]));
+    }
+
+    function loadOrders() {
+      const ordersList = document.getElementById("orders-list");
+      ordersList.innerHTML = "กำลังโหลดรายการ...";
+
+      db.collection("orders").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+        if (snapshot.empty) {
+          ordersList.innerHTML = "<p>ยังไม่มีคำสั่งซื้อ</p>";
+          return;
+        }
+
+        let html = '<table>';
+        html += `
+          <tr>
+            <th>อีเมล</th>
+            <th>สินค้า</th>
+            <th>ราคา</th>
+            <th>เลขอ้างอิง</th>
+            <th>สถานะ</th>
+            <th>ลิงก์ Google Drive</th>
+            <th>จัดการ</th>
+          </tr>
+        `;
+
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const id = doc.id;
+
+          html += `
+            <tr>
+              <td>${escapeHtml(data.email)}</td>
+              <td>${escapeHtml(data.product)}</td>
+              <td>${data.price || 0} บาท</td>
+              <td>${escapeHtml(data.transactionId || '-')}</td>
+              <td>${escapeHtml(data.status || 'pending')}</td>
+              <td>
+                ${data.driveLink ? `<a href="${escapeHtml(data.driveLink)}" target="_blank" rel="noopener noreferrer">ลิงก์</a>` : '-'}
+              </td>
+              <td>
+                ${data.status === "pending" ? `
+                  <button onclick="approveOrder('${id}')">✅ อนุมัติ</button>
+                  <button onclick="rejectOrder('${id}')">❌ ปฏิเสธ</button>
+                ` : '-'}
+              </td>
+            </tr>
+          `;
+        });
+
+        html += "</table>";
+        ordersList.innerHTML = html;
+      });
+    }
+
+    function approveOrder(id) {
+      db.collection("orders").doc(id).get().then(doc => {
+        if (!doc.exists) return alert("ไม่พบคำสั่งซื้อ");
+
+        const data = doc.data();
+        const productName = data.product;
+        const link = products[productName]?.url;
+
+        if (!link) return alert("❌ ไม่พบลิงก์ของสินค้านี้ใน products.js");
+
+        db.collection("orders").doc(id).update({
+          status: "approved",
+          driveLink: link,
+          approvedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+          alert("✅ อนุมัติและส่งลิงก์เรียบร้อยแล้ว");
+        }).catch(err => {
+          alert("❌ เกิดข้อผิดพลาด: " + err.message);
+        });
+      }).catch(err => {
+        alert("❌ เกิดข้อผิดพลาด: " + err.message);
+      });
+    }
+
+    function rejectOrder(id) {
+      if (!confirm("ต้องการปฏิเสธคำสั่งซื้อนี้?")) return;
+
+      db.collection("orders").doc(id).update({
+        status: "rejected",
+        rejectedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        alert("❌ ปฏิเสธเรียบร้อย");
+      }).catch(err => {
+        alert("❌ เกิดข้อผิดพลาด: " + err.message);
+      });
+    }
+  </script>
+</body>
+</html>

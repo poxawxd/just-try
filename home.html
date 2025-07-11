@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>ร้านขายรูปภาพ - Secret Shop</title>
+  <link rel="stylesheet" href="home-style.css" />
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <header>
+    <h1>🖼️ Secret Shop 🖼️</h1>
+    <p>เลือกรูปที่คุณชอบ แล้วกดสั่งซื้อได้เลย!</p>
+
+    <!-- ช่องทางติดต่อเมื่อเกิดปัญหา -->
+    <div id="contact-help" style="margin-top: 15px; font-size: 14px; color: #b33657;">
+      เกิดปัญหาติดต่อเราได้ที่
+      <a href="https://t.me/ShiroiKJP" style="color:#ff4e8b; font-weight:600; text-decoration:none;">@ShiroiKJP</a>
+    </div>
+
+    <!-- กรองหมวดหมู่ -->
+    <label for="filter-category" style="display:block; margin-top: 20px;">กรองตามหมวดหมู่:</label>
+    <select id="filter-category">
+      <option value="all">ทั้งหมด</option>
+      <option value="Mochi">Mochi</option>
+      <option value="Rainxang">Rainxang</option>
+      <option value="Byzeko">Byzeko</option>
+      <!-- เพิ่มหมวดหมู่ตามสินค้า -->
+    </select>
+  </header>
+
+  <div class="user-bar">
+  👤 <span id="user-email">Loading...</span>
+  <button onclick="window.location.href='history.html'" class="btn-orders">📦 ประวัติคำสั่งซื้อ</button>
+  <button id="adminBtn" onclick="window.location.href='admin.html'" class="btn-admin" style="display:none;">⚙️ แอดมิน</button>
+  <button onclick="logout()" class="btn-logout">🚪 ออกจากระบบ</button>
+</div>
+
+  <div id="product-list" class="grid"></div>
+
+  <script src="product.js"></script>
+  <script src="home.js"></script>
+
+  <script>
+    // ป้องกันคลิกขวา
+    document.addEventListener('contextmenu', function (e) {
+      e.preventDefault();
+      alert("ห้ามคลิกขวาเพื่อป้องกันการก็อปปี้ภาพ!");
+    });
+  </script>
+</body>
+</html>

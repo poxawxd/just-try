@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>ชำระเงิน - Secret Shop</title>
+  <link rel="stylesheet" href="payment-style.css" />
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+  <a href="home.html" class="back-link">← กลับหน้าหลัก</a>
+
+  <div class="container">
+    <form id="payment-form">
+      <h2>ยืนยันการโอนเงิน</h2>
+
+      <label for="transaction-id">เลขอ้างอิงการโอนเงิน (Transaction ID)</label>
+      <input type="text" id="transaction-id" placeholder="กรอกเลขอ้างอิงที่นี่" required>
+
+      <button type="submit">ส่งคำสั่งซื้อ</button>
+      <p id="message"></p>
+    </form>
+
+    <div class="payment-info">
+      <h3>ช่องทางการโอนเงิน</h3>
+      <p><strong>กสิกรไทย:</strong> 1792-775-167</p>
+      <p><strong>พร้อมเพย์:</strong> 086-346-9001</p>
+    </div>
+  </div>
+
+  <!-- เชื่อมกับ product.js และ payment.js -->
+  <script src="product.js"></script>
+  <script src="payment.js"></script>
+</body>
+</html>

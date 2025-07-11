@@ -1,0 +1,228 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(120deg, #fce3ec, #ffe8f0);
+  color: #4a2c2c;
+  text-align: center;
+}
+
+header {
+  padding: 40px 20px;
+  backdrop-filter: blur(10px);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 320px));
+  justify-content: center; 
+  gap: 20px;
+  padding: 30px;
+  max-width: 1000px; /* ✅ จำกัดความกว้างสูงสุด */
+  margin: 0 auto;    /* ✅ จัดให้อยู่กึ่งกลาง */
+}
+
+
+.card {
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 20px;
+  box-shadow: 0 8px 22px rgba(255, 120, 170, 0.15);
+  padding: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  will-change: transform, box-shadow;
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.card:hover {
+  transform: scale(1.05) translateY(-8px);
+  box-shadow: 0 15px 30px rgba(255, 100, 160, 0.4);
+  z-index: 10;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(270deg, #ff7eb3, #ff758c, #ff4e8b, #ff005e);
+  background-size: 800% 800%;
+  filter: blur(20px);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: -1;
+  border-radius: 20px;
+  animation: gradientMove 10s ease infinite;
+}
+
+.card:hover::before {
+  opacity: 0.4;
+}
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 15px;
+  position: relative;
+  z-index: 1;
+}
+
+.card h3 {
+  margin-top: 15px;
+  position: relative;
+  z-index: 1;
+}
+
+.btn {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 25px;
+  background: linear-gradient(45deg, #ff7eb3, #ff758c);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: background 0.3s, box-shadow 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 4px 10px rgba(255, 120, 170, 0.5);
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: linear-gradient(45deg, #ff4e8b, #ff005e);
+  box-shadow: 0 8px 20px rgba(255, 0, 94, 0.7);
+  transform: scale(1.05);
+}
+
+.user-info {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #5c3a3a;
+  position: relative;
+  z-index: 1;
+}
+
+/* ปุ่มทั้งหมดใช้โทนชมพูหรู */
+.btn-logout,
+.btn-orders,
+.btn-admin {
+  background: linear-gradient(135deg, #ffaad9, #ff6ec4);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  margin-left: 8px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 4px 10px rgba(255, 110, 196, 0.3);
+}
+
+.btn-logout:hover,
+.btn-orders:hover,
+.btn-admin:hover {
+  background: linear-gradient(135deg, #ff6ec4, #ffaad9);
+  box-shadow: 0 6px 14px rgba(255, 110, 196, 0.5);
+  transform: scale(1.05);
+}
+
+.user-bar {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(14px);
+  padding: 10px 16px;
+  border-radius: 30px;
+  box-shadow: 0 6px 20px rgba(255, 110, 196, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 1000;
+  font-size: 14px;
+}
+
+.user-bar span {
+  font-weight: 600;
+  color: #4a2c2c;
+  margin-right: 6px;
+}
+
+#filter-category {
+  appearance: none;
+  background: linear-gradient(135deg, #ffe3e9, #ffd6da);
+  color: #4a2c00;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 6px 24px 6px 12px;
+  height: 36px;
+  border-radius: 12px;
+  border: 2px solid #ff758c;
+  cursor: pointer;
+  box-shadow: none;
+  width: auto;
+  max-width: 180px;
+  transition: background 0.3s ease, border-color 0.3s ease;
+  position: relative;
+}
+
+#filter-category:hover {
+  background: linear-gradient(135deg, #ffd6da, #ffb1b9);
+  border-color: #ff4e8b;
+}
+
+#filter-category:focus {
+  outline: none;
+  border-color: #d14568;
+  box-shadow: 0 0 6px rgba(209, 75, 103, 0.6);
+}
+
+#filter-category::after {
+  content: "▼";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 10px;
+  color: #4a2c00;
+  user-select: none;
+}
+
+img {
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+.btn-random-discount {
+  padding: 8px 18px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(135deg, #ff9eb6, #ff4e8b);
+  border: none;
+  border-radius: 20px;
+  margin-left: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-random-discount:hover {
+  background: linear-gradient(135deg, #ff4e8b, #ff9eb6);
+  transform: scale(1.05);
+}
