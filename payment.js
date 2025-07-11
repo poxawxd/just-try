@@ -28,7 +28,7 @@ window.addEventListener('DOMContentLoaded', () => {
   auth.onAuthStateChanged(user => {
     if (!user) {
       alert("กรุณาเข้าสู่ระบบก่อนทำรายการ");
-      window.location.href = "login.html";
+      window.location.href = "index.html";
       return;
     }
 
