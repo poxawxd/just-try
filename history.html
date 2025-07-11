@@ -34,14 +34,14 @@
     auth.onAuthStateChanged(user => {
       if (!user) {
         alert("กรุณาเข้าสู่ระบบก่อน");
-        window.location.href = "login.html";
+        window.location.href = "index.html";
         return;
       }
       loadMyOrders(user.email);
     });
 
     function logout() {
-      auth.signOut().then(() => window.location.href = "login.html");
+      auth.signOut().then(() => window.location.href = "index.html");
     }
 
     function escapeHtml(text) {
