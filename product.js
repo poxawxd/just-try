@@ -1,8 +1,8 @@
 const products = {
-  "Test": {
+  "Team The Aura": {
     url: "https://drive.google.com/drive/folders/15Zsh0djoawyRH7HsZgMhYYckfWvsEbWA?usp=drive_link",
     price: 100,
-    image: "https://i.postimg.cc/W3QBChvF/Snap-Insta-to-502087226-18276411682262170-8484047816929036646-n700760786796796796.jp",
+    image: "https://i.postimg.cc/xCgks7XR/IMG-20240807-122305.jpg",
     detail: "เซ็ตภาพ test ",
     category: "test"
   },
